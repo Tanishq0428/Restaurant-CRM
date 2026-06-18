@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  MANAGER
+  CASHIER
+}
+
+model Organization {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  customers Customer[]
+  visits    Visit[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+}
+
+model User {
+  id             String @id @default(cuid())
+  organizationId String
+
+  name         String
+  email        String @unique
+  passwordHash String
+
+  role UserRole @default(OWNER)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+}
+
+model Customer {
+  id             String @id @default(cuid())
+  organizationId String
+
+  name  String
+  phone String
+  email String?
+
+  birthday DateTime?
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  visits Visit[]
+}
+
+model Visit {
+  id String @id @default(cuid())
+
+  organizationId String
+  customerId     String
+
+  visitDate  DateTime
+  billAmount Decimal  @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  customer     Customer     @relation(fields: [customerId], references: [id])
+}
