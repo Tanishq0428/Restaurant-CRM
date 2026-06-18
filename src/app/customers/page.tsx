@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import CustomerSearch from "@/components/CustomerSearch";
 import Link from "next/link";
-
+export const dynamic = "force-dynamic";
 export default async function CustomersPage() {
   const customers = await prisma.customer.findMany({
     orderBy: {
