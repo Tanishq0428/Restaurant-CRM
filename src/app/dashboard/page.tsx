@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type DashboardData = {
@@ -87,6 +88,7 @@ const formatDate = (value: string) =>
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const [data, setData] = useState<DashboardData>({
     totalCustomers: 0,
     totalVisits: 0,
@@ -101,6 +103,17 @@ export default function DashboardPage() {
   const [analytics, setAnalytics] = useState<Analytics[]>([]);
   const [birthdayCustomers, setBirthdayCustomers] = useState<BirthdayCustomer[]>([]);
   const [followupCustomers, setFollowupCustomers] = useState<FollowupCustomer[]>([]);
+
+
+  useEffect(() => {
+  const user =
+    localStorage.getItem("crm-user");
+
+  if (!user) {
+    router.push("/login");
+  }
+}, [router]);
+
 
   useEffect(() => {
     async function loadData() {
@@ -174,12 +187,23 @@ export default function DashboardPage() {
                 Restaurant CRM
               </h1>
             </div>
-            <div className="rounded-2xl bg-white/10 px-4 py-2 text-sm text-indigo-50">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              })}
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-white/10 px-4 py-2 text-sm text-indigo-50">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
+            <button
+              onClick={() => {
+                localStorage.removeItem("crm-user");
+                router.push("/login");
+              }}
+              className="rounded-xl bg-indigo-900 px-4 py-2 text-white font-medium shadow-lg shadow-indigo-950/40 hover:bg-indigo-800 hover:shadow-xl hover:shadow-indigo-950/50 transition-all duration-200"
+            >
+              Logout
+            </button>
             </div>
           </div>
         </section>
