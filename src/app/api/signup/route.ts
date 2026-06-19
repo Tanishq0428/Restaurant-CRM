@@ -58,16 +58,16 @@ export async function POST(request: Request) {
       success: true,
       userId: user.id,
     });
-  } catch (error) {
-    console.error(error);
+  }catch (error) {
+  console.error(error);
 
-    return Response.json(
-      {
-        error: "Internal Server Error",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  return Response.json(
+    {
+      error: String(error),
+    },
+    {
+      status: 500,
+    }
+  );
+}
 }

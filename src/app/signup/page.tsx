@@ -1,84 +1,146 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignupPage() {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
+  const [restaurantName, setRestaurantName] =
+    useState("");
 
+  const [ownerName, setOwnerName] =
+    useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  async function handleSignup() {
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
+    const response = await fetch(
+      "/api/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          restaurantName,
+          ownerName,
+          email,
+          password,
+        }),
+      }
+    );
 
-    const response = await fetch("/api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        restaurantName: formData.get("restaurantName"),
-        ownerName: formData.get("ownerName"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-      }),
-    });
-
-    const data = await response.json();
-
-    alert(JSON.stringify(data));
+    const data =
+      await response.json();
 
     setLoading(false);
+
+    if (!response.ok) {
+      alert(
+        data.error ||
+          "Signup failed"
+      );
+      return;
+    }
+
+    alert(
+      "Account created successfully!"
+    );
+
+    router.push("/login");
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-md border rounded-xl p-6 shadow">
-        <h1 className="text-3xl font-bold mb-6">
-          Create Restaurant Account
-        </h1>
+    <main className="min-h-screen bg-gradient-to-br from-indigo-900 via-slate-900 to-black flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-slate-900">
+            Restaurant CRM
+          </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-        >
+          <p className="text-slate-500 mt-2">
+            Create your restaurant account
+          </p>
+        </div>
+
+        <div className="space-y-4">
           <input
-            name="restaurantName"
-            className="w-full border rounded p-3"
+            value={restaurantName}
+            onChange={(e) =>
+              setRestaurantName(
+                e.target.value
+              )
+            }
             placeholder="Restaurant Name"
+            className="w-full border border-slate-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
-            name="ownerName"
-            className="w-full border rounded p-3"
+            value={ownerName}
+            onChange={(e) =>
+              setOwnerName(
+                e.target.value
+              )
+            }
             placeholder="Owner Name"
+            className="w-full border border-slate-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
-            name="email"
             type="email"
-            className="w-full border rounded p-3"
-            placeholder="Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
+            placeholder="Email Address"
+            className="w-full border border-slate-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
-            name="password"
             type="password"
-            className="w-full border rounded p-3"
+            value={password}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
             placeholder="Password"
+            className="w-full border border-slate-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <button
-            type="submit"
+            onClick={handleSignup}
             disabled={loading}
-            className="w-full bg-black text-white rounded p-3"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl py-4 transition"
           >
-            {loading ? "Creating..." : "Create Account"}
+            {loading
+              ? "Creating Account..."
+              : "Create Account"}
           </button>
-        </form>
+
+          <p className="text-center mt-4 text-slate-500">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-indigo-600 font-semibold hover:text-indigo-800"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </main>
   );

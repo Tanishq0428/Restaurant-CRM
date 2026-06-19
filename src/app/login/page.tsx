@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -103,6 +104,7 @@ export default function LoginPage() {
                 }
                 className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
+              
             </div>
 
             <button
@@ -114,6 +116,16 @@ export default function LoginPage() {
                 ? "Logging In..."
                 : "Login"}
             </button>
+
+            <p className="text-center mt-6 text-slate-400">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
+                className="text-indigo-400 font-semibold hover:text-indigo-300"
+              >
+                Sign Up
+              </Link>
+            </p>
           </div>
 
           <div className="mt-8 text-center text-sm text-gray-500">
