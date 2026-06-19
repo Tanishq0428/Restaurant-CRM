@@ -36,11 +36,18 @@ export async function POST(request: Request) {
       name: user.name,
     });
   } catch (error) {
-    console.error(error);
+  console.error(error);
 
-    return Response.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+  return Response.json(
+    {
+      error:
+        error instanceof Error
+          ? error.message
+          : String(error),
+    },
+    {
+      status: 500,
+    }
+  );
+}
 }
