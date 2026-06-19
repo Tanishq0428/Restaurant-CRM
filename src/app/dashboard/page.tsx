@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import RevenueChart from "@/components/RevenueChart";
 import Link from "next/link";
 
 type DashboardData = {
@@ -502,17 +503,17 @@ export default function DashboardPage() {
           </div>
 
           <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <h2 className="text-xl font-semibold text-slate-900">Revenue Trend</h2>
+            <h2 className="text-xl font-semibold text-slate-900">
+              Revenue Trend
+            </h2>
+
             {analytics.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">No revenue data yet</p>
+              <p className="mt-3 text-sm text-slate-500">
+                No revenue data yet
+              </p>
             ) : (
-              <div className="mt-4 space-y-3">
-                {analytics.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                    <span className="text-sm text-slate-600">{item.date}</span>
-                    <span className="font-semibold text-slate-900">{formatCurrency(item.revenue)}</span>
-                  </div>
-                ))}
+              <div className="mt-4">
+                <RevenueChart data={analytics} />
               </div>
             )}
           </div>
