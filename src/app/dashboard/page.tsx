@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import RevenueChart from "@/components/RevenueChart";
 import Link from "next/link";
+import Sidebar from "@/components/Sidebar";
 
 type DashboardData = {
   totalCustomers: number;
@@ -89,7 +90,16 @@ const formatDate = (value: string) =>
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  
   const router = useRouter();
+  const user =
+  typeof window !== "undefined"
+    ? JSON.parse(
+        localStorage.getItem("crm-user") || "{}"
+      )
+    : {};
+
+const userName = user?.name || "Owner";
   const [data, setData] = useState<DashboardData>({
     totalCustomers: 0,
     totalVisits: 0,
@@ -141,6 +151,12 @@ export default function DashboardPage() {
           fetch("/api/followup-customers"),
         ]);
 
+        if (!dashboardRes.ok) {
+          throw new Error(
+            `Dashboard API failed: ${dashboardRes.status}`
+          );
+        }
+
         setData(await dashboardRes.json());
         setVisits(await visitsRes.json());
         setTopCustomers(await topRes.json());
@@ -176,7 +192,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f7fb] px-4 py-8 sm:px-6 lg:px-8">
+  <div className="flex">
+    <Sidebar />
+
+    <main className="flex-1 min-h-screen lg:ml-60 bg-[#f6f7fb] px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
         <section className="rounded-3xl bg-gradient-to-r from-[#1f2a44] via-[#2c3e73] to-[#5b5fdd] p-6 text-white shadow-xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -520,6 +539,7 @@ export default function DashboardPage() {
         </section>
       </div>
     </main>
+  </div>
   );
 }
 
