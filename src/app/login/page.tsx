@@ -14,7 +14,12 @@ export default function LoginPage() {
   const [loading, setLoading] =
     useState(false);
 
+
   async function login() {
+        if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
     try {
       setLoading(true);
 

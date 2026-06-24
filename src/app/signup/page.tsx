@@ -22,7 +22,17 @@ export default function SignupPage() {
     useState(false);
 
   async function handleSignup() {
-    setLoading(true);
+  if (
+    !restaurantName.trim() ||
+    !ownerName.trim() ||
+    !email.trim() ||
+    !password.trim()
+  ) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  setLoading(true);
 
     const response = await fetch(
       "/api/signup",
